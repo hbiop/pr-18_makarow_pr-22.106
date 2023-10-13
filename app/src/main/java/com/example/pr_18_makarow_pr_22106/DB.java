@@ -11,7 +11,20 @@ public class DB {
         private static final String DB_NAME = "mydb";
         private static final int DB_VERSION = 1;
         private static final String DB_TABLE = "mytab";
-
+        private static final String COMPANY_TABLE = "company";
+        public static final String COMPANY_COLUMN_ID = "_id";
+        public static final String COMPANY_COLUMN_NAME = "name";
+        private static final String COMPANY_TABLE_CREATE = "create table "
+            + COMPANY_TABLE + "(" + COMPANY_COLUMN_ID
+            + " integer primary key, " + COMPANY_COLUMN_NAME + " text" + ");";
+        private static final String PHONE_TABLE = "phone";
+        public static final String PHONE_COLUMN_ID = "_id";
+        public static final String PHONE_COLUMN_NAME = "name";
+        public static final String PHONE_COLUMN_COMPANY = "company";
+        private static final String PHONE_TABLE_CREATE = "create table "
+            + PHONE_TABLE + "(" + PHONE_COLUMN_ID
+            + " integer primary key autoincrement, " + PHONE_COLUMN_NAME
+            + " text, " + PHONE_COLUMN_COMPANY + " integer" + ");";
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_IMG = "img";
         public static final String COLUMN_TXT = "txt";
@@ -48,7 +61,15 @@ public class DB {
         public Cursor getAllData() {
             return mDB.query(DB_TABLE, null, null, null, null, null, null);
         }
+    public Cursor getCompanyData() {
+        return mDB.query(COMPANY_TABLE, null, null, null, null, null, null);
+    }
 
+    // данные по телефонам конкретной группы
+    public Cursor getPhoneData(long companyID) {
+        return mDB.query(PHONE_TABLE, null, PHONE_COLUMN_COMPANY + " = "
+                + companyID, null, null, null, null);
+    }
         // добавить запись в DB_TABLE
         public void addRec(String txt, int img) {
             ContentValues cv = new ContentValues();
@@ -79,6 +100,45 @@ public class DB {
                     cv.put(COLUMN_TXT, "sometext " + i);
                     cv.put(COLUMN_IMG, R.drawable.ic_launcher);
                     db.insert(DB_TABLE, null, cv);
+                }
+                cv = new ContentValues();
+
+                // названия компаний (групп)
+                String[] companies = new String[] { "HTC", "Samsung", "LG" };
+
+                // создаем и заполняем таблицу компаний
+                db.execSQL(COMPANY_TABLE_CREATE);
+                for (int i = 0; i < companies.length; i++) {
+                    cv.put(COMPANY_COLUMN_ID, i + 1);
+                    cv.put(COMPANY_COLUMN_NAME, companies[i]);
+                    db.insert(COMPANY_TABLE, null, cv);
+                }
+
+                // названия телефонов (элементов)
+                String[] phonesHTC = new String[] { "Sensation", "Desire",
+                        "Wildfire", "Hero" };
+                String[] phonesSams = new String[] { "Galaxy S II", "Galaxy Nexus",
+                        "Wave" };
+                String[] phonesLG = new String[] { "Optimus", "Optimus Link",
+                        "Optimus Black", "Optimus One" };
+
+                // создаем и заполняем таблицу телефонов
+                db.execSQL(PHONE_TABLE_CREATE);
+                cv.clear();
+                for (int i = 0; i < phonesHTC.length; i++) {
+                    cv.put(PHONE_COLUMN_COMPANY, 1);
+                    cv.put(PHONE_COLUMN_NAME, phonesHTC[i]);
+                    db.insert(PHONE_TABLE, null, cv);
+                }
+                for (int i = 0; i < phonesSams.length; i++) {
+                    cv.put(PHONE_COLUMN_COMPANY, 2);
+                    cv.put(PHONE_COLUMN_NAME, phonesSams[i]);
+                    db.insert(PHONE_TABLE, null, cv);
+                }
+                for (int i = 0; i < phonesLG.length; i++) {
+                    cv.put(PHONE_COLUMN_COMPANY, 3);
+                    cv.put(PHONE_COLUMN_NAME, phonesLG[i]);
+                    db.insert(PHONE_TABLE, null, cv);
                 }
             }
 

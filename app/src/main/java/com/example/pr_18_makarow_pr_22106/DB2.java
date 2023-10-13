@@ -50,15 +50,7 @@ public class DB2 {
     }
 
     // данные по компаниям
-    public Cursor getCompanyData() {
-        return mDB.query(COMPANY_TABLE, null, null, null, null, null, null);
-    }
 
-    // данные по телефонам конкретной группы
-    public Cursor getPhoneData(long companyID) {
-        return mDB.query(PHONE_TABLE, null, PHONE_COLUMN_COMPANY + " = "
-                + companyID, null, null, null, null);
-    }
 
     private class DBHelper extends SQLiteOpenHelper {
 

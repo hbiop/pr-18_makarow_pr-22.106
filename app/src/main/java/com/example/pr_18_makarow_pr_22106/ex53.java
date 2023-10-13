@@ -10,22 +10,22 @@ import android.widget.SimpleCursorTreeAdapter;
 
 public class ex53 extends AppCompatActivity {
     ExpandableListView elvMain;
-    DB2 db;
+    DB db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ex53);
-        db = new DB2(this);
+        db = new DB(this);
         db.open();
 
         // готовим данные по группам для адаптера
         Cursor cursor = db.getCompanyData();
         startManagingCursor(cursor);
         // сопоставление данных и View для групп
-        String[] groupFrom = { DB2.COMPANY_COLUMN_NAME };
+        String[] groupFrom = { DB.COMPANY_COLUMN_NAME };
         int[] groupTo = { android.R.id.text1 };
         // сопоставление данных и View для элементов
-        String[] childFrom = { DB2.PHONE_COLUMN_NAME };
+        String[] childFrom = { DB.PHONE_COLUMN_NAME };
         int[] childTo = { android.R.id.text1 };
 
         // создаем адаптер и настраиваем список
@@ -53,7 +53,7 @@ class MyAdapter extends SimpleCursorTreeAdapter {
 
     protected Cursor getChildrenCursor(Cursor groupCursor) {
         // получаем курсор по элементам для конкретной группы
-        int idColumn = groupCursor.getColumnIndex(DB2.COMPANY_COLUMN_ID);
+        int idColumn = groupCursor.getColumnIndex(DB.COMPANY_COLUMN_ID);
         return db.getPhoneData(groupCursor.getInt(idColumn));
     }
 }
